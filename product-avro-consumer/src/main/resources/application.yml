@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: "product-avro-consumer"
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      # Configures the Spring Kafka ErrorHandlingDeserializer that delegates to the 'real' deserializers
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      client-id: ${spring.application.name}
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: earliest
+    properties:
+      # Delegate deserializers
+      spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+      spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      schema:
+        registry:
+          url: http://localhost:8081
+      # Tells Kafka / Schema Registry that we will be using a specific Avro type
+      # (Product type in this case) otherwise Kafka will expect GenericRecord to be used on the topic.
+      specific:
+        avro:
+          reader: true
+    # At application startup a missing topic on the broker will not fail the
+    # application startup
+    listener:
+      missing-topics-fatal: false
+
+  # Since Spring Boot 2.2 JMX is disabled by default but
+  # Micrometer is depending on JMX for (Spring) Kafka consumer metrics!
+  jmx:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  metrics:
+    tags:
+      application: ${spring.application.name}

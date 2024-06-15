@@ -1,0 +1,23 @@
+{
+  "namespace": "dev.pravin.avro.product",
+  "type": "record",
+  "name": "Product",
+  "version": 1,
+  "fields": [
+    {
+      "name": "productId",
+      "type": "int",
+      "doc": "Unique Product ID"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Product Name"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "doc": "Product Description"
+    }
+  ]
+}
