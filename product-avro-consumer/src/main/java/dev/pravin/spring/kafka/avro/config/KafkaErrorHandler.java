@@ -20,7 +20,7 @@ public class KafkaErrorHandler {
         return new DefaultErrorHandler(
                 (record, exception) -> {
                     log.info("Error occurred while processing: " + record);
-                    log.warn("Exception: " + exception);
+                    log.error("Exception: " + exception);
                 }, new FixedBackOff(0L, 2L) );
     }
 }
